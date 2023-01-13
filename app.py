@@ -125,7 +125,7 @@ def ai():
         # similarity = find_match.clip_transformer_matching(post_image=Image.fromarray(screenshot_),original_image=Image.fromarray(original_image))
         similarity = find_match.cosine_image_match(post_image=screenshot_,
                                                    original_image=original_image)
-        result["MatchPercentage"] = str(similarity)
+        result["MatchPercentage"] = str(int(round(similarity, 2) * 100)) + " %"
         result['Success'] = True
         return jsonify(result)
 
