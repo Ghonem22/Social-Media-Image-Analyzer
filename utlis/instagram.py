@@ -1,6 +1,6 @@
 import cv2
 import boto3
-
+import re
 
 AccessKeyID = ""
 SecretAccessKey = ""
@@ -63,6 +63,10 @@ class InstaPostExtractor:
 
 
 class InstaStoryExtractor:
+    def __init__(self):
+        self.dates = ("d", "s", "س", "ث", "h", "ي", "m")
+        self.converter = {"٠": "0", "١": "1", "٢": "2", "٣": "3", "٤": "4", "٥": "5",
+                          "٦": "6", "٧": "7", "٨": "8", "٩": "9", "س": "h", "ث": "s", "ي": "d"}
 
     def get_text(self, img):
         # read image as byte object if the input is image path
@@ -87,13 +91,13 @@ class InstaStoryExtractor:
         except:
             return False
 
-    def get_data(self, img):
+    def get_viwers(self, img):
         response = self.get_text(img)["TextDetections"]
         data = {"viewers": 0}
         for i in range(len(response)):
             text = response[i]['DetectedText']
             text_checker = text.lower().replace("أ", "ا").replace("إ", "ا").replace("آ", "ا")
-            if "viewers" in text_checker or "مشاهد" in text_checker:
+            if ("viewers" in text_checker or "مشاهد" in text_checker):
                 if self.is_num(response[i - 1]['DetectedText'].strip()):
                     data["viewers"] = int((response[i - 1]['DetectedText']).strip())
                 elif self.is_num(response[i - 2]['DetectedText'].strip()):
@@ -106,5 +110,46 @@ class InstaStoryExtractor:
                     data["viewers"] = int((response[i - 5]['DetectedText']).strip())
 
                 break
+        return data
+
+
+    def check_date(self, txt):
+        pp = txt.split()
+        for i in range(len(pp)):
+            if i > 0:
+                # if there's a date symbol and the last item is num, we can consider that as a date
+                if pp[i].strip() in self.dates and self.is_num(pp[i - 1]):
+                    return pp[i - 1].strip() + " " + pp[i].strip()
+
+                # if there's a num and the last item is date symbol, we can consider that as a date
+                if self.is_num(pp[i].strip()) and pp[i - 1].strip() in self.dates:
+                    return pp[i - 1].strip() + " " + pp[i].strip()
+
+            # if this item is consist of number and date symbol
+            num = re.findall(r'\d+', pp[i])
+            symbol = re.sub("\d+", " ", pp[i]).strip()
+            if symbol in self.dates:
+                num = re.findall(r'\d+', pp[i])
+                if len(num) > 0:
+                    return num[0] + " " + symbol
+
+        return False
+
+    def get_date(self, img, data = None):
+        if data is None:
+            data = {}
+
+        data["AddedFrom"] = ''
+
+        response = self.get_text(img)
+        # iterate over date_sumbols to get date
+        for i in range(len(response["TextDetections"])):
+            text = response["TextDetections"][i]['DetectedText']
+            print(text)
+            result = self.check_date(text)
+            if result:
+                print(f"result: {result}")
+                data["AddedFrom"] = result
+                return data
         return data
 
