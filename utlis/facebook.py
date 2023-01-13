@@ -1,9 +1,14 @@
 import torch
 import cv2
 import boto3
+import configparser
+import configparser
 
-AccessKeyID = ""
-SecretAccessKey = ""
+config = configparser.ConfigParser()
+config.read('utlis/config.ini')
+
+AccessKeyID = config['AWS']['access_key']
+SecretAccessKey = config['AWS']['secret_key']
 
 rekognition_client = boto3.client('rekognition',
                                   aws_access_key_id=AccessKeyID,

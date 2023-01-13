@@ -11,7 +11,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 class ImageMatch:
-    def __init__(self, object_model, matching_model, size, imagenet_model=None):
+    def __init__(self, object_model, size, matching_model=None, imagenet_model=None):
         self.objects_model = object_model
         self.imagenet_model = imagenet_model
         self.size = size
