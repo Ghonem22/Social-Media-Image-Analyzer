@@ -18,7 +18,7 @@ import configparser
 app = Flask(__name__)
 # Load all machine learning models
 facebook_post_model = torch.hub.load('ultralytics/yolov5', 'custom',
-                                     path='models/facebook_pos4_m6.pt')
+                                     path='models/facebook_pos4_X6.pt')
 
 facebook_story_model = torch.hub.load('ultralytics/yolov5', 'custom',
                                       path='models/FB_Story_x.pt')
@@ -125,7 +125,7 @@ def ai():
         # similarity = find_match.clip_transformer_matching(post_image=Image.fromarray(screenshot_),original_image=Image.fromarray(original_image))
         similarity = find_match.cosine_image_match(post_image=screenshot_,
                                                    original_image=original_image)
-        result["MatchPercentage"] = str(similarity)
+        result["MatchPercentage"] = str(int(round(similarity, 2) * 100)) + " %"
         result['Success'] = True
         return jsonify(result)
 
