@@ -2,8 +2,13 @@ import cv2
 import boto3
 import re
 
-AccessKeyID = ""
-SecretAccessKey = ""
+import configparser
+
+config = configparser.ConfigParser()
+config.read('utlis/config.ini')
+
+AccessKeyID = config['AWS']['access_key']
+SecretAccessKey = config['AWS']['secret_key']
 
 rekognition_client = boto3.client('rekognition',
                                   aws_access_key_id=AccessKeyID,
@@ -145,10 +150,8 @@ class InstaStoryExtractor:
         # iterate over date_sumbols to get date
         for i in range(len(response["TextDetections"])):
             text = response["TextDetections"][i]['DetectedText']
-            print(text)
             result = self.check_date(text)
             if result:
-                print(f"result: {result}")
                 data["AddedFrom"] = result
                 return data
         return data
