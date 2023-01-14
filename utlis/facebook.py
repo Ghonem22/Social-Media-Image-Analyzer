@@ -15,7 +15,7 @@ rekognition_client = boto3.client('rekognition',
                                   aws_secret_access_key=SecretAccessKey,
                                   region_name='us-east-1')
 
-
+# ToDo: Retrain  the model with more custom  privacy data
 class PostDataExtractor:
     def __init__(self, model):
         self.model = model
@@ -74,7 +74,7 @@ class PostDataExtractor:
 
         return data
 
-
+# ToDo: Retrain  the model to extract both date and username
 class StoryDataExtractor:
     def __init__(self, model):
         self.model = model
