@@ -71,7 +71,11 @@ class InstaStoryExtractor:
     def __init__(self):
         self.dates = ("d", "s", "س", "ث", "h", "ي", "m")
         self.converter = {"٠": "0", "١": "1", "٢": "2", "٣": "3", "٤": "4", "٥": "5",
-                          "٦": "6", "٧": "7", "٨": "8", "٩": "9", "س": "h", "ث": "s", "ي": "d"}
+                          "٦": "6", "٧": "7", "٨": "8", "٩": "9", "س": "h", "ث": "s", "ي": "d", "ا": "1"}
+        self.date_sumbols = ["january", "february", "march", "april", "may", "june", "july", "august",
+                             "september", "october", "november", "december",
+                             "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "اكتوبر",
+                             "نوفمبر", "ديسمبر"]
 
     def get_text(self, img):
         # read image as byte object if the input is image path
@@ -104,7 +108,7 @@ class InstaStoryExtractor:
 
         for i in range(len(response)):
             text = response[i]['DetectedText']
-            text_checker = text.lower().replace("أ", "ا").replace("إ", "ا").replace("آ", "ا")
+            text_checker = text.lower().replace("أ", "ا").replace("إ", "ا").replace("آ", "ا").replace("مشا هد", "مشاهد")
 
             if ("viewers" in text_checker or "مشاهد" in text_checker):
                 num = text_checker.replace("viewers", "").replace("مشاهد", "").replace(",", "").strip()
@@ -124,6 +128,13 @@ class InstaStoryExtractor:
         return data
 
 
+    def check_month(self, txt):
+        for s in self.date_sumbols:
+            if s in txt.lower():
+                if len(txt.lower().replace(s, '').strip()) > 3:
+                    return txt
+        return False
+
     def check_date(self, txt):
         pp = txt.split()
         for i in range(len(pp)):
@@ -138,13 +149,20 @@ class InstaStoryExtractor:
 
             # if this item is consist of number and date symbol
             num = re.findall(r'\d+', pp[i])
-            symbol = re.sub("\d+", " ", pp[i]).strip()
-            if symbol in self.dates:
-                num = re.findall(r'\d+', pp[i])
-                if len(num) > 0:
-                    return num[0] + " " + symbol
+            if len(num) > 0:
+                num = num[0]
+                symbol = pp[i].replace(num, "")
+                print(num, symbol)
+                if symbol in self.dates:
+                    return num + " " + symbol
 
         return False
+
+    def normalize_txt(self, txt):
+        for i in self.converter:
+            # print(i, self.converter[i])
+            txt = txt.replace(i, self.converter[i])
+        return txt
 
     def get_date(self, img, data = None):
         if data is None:
@@ -154,18 +172,36 @@ class InstaStoryExtractor:
         # iterate over date_sumbols to get date
         for i in range(len(response["TextDetections"])):
             text = response["TextDetections"][i]['DetectedText']
-            result = self.check_date(text)
+            print(text)
+            normalized_text = self.normalize_txt(text)
+            result = self.check_date(normalized_text)
             if result:
                 data["AddedFrom"] = result
                 return data
+
+            result = self.check_month(text)
+            if result:
+                data["AddedFrom"] = result
+                return data
+
         return data
 
+#
+# if __name__ == "__main__":
+#     import glob
+#     imgs = glob.glob("test/insta story/date/*")
+#     insta_extractor = InstaStoryExtractor()
+#
+#     for img in imgs:
+#         result = insta_extractor.get_date(img)
+#         print(f"img: {img} result: {result}")
+#
 
 if __name__ == "__main__":
-    im1 = "test\\facebook_story\\9ed0f0166b7e5b00225536d3309b8335.jpg"
-    im2 = "test\\facebook_story\\9ed0f0166b7e5b00225536d3309b8335.jpg"
+    import glob
+    imgs = glob.glob("test/insta story/viewers/*")
     insta_extractor = InstaStoryExtractor()
-    result = insta_extractor.get_viwers(im1)
-    print(result)
-    result = insta_extractor.get_date(im2, result)
-    print(result)
+
+    for img in imgs:
+        result = insta_extractor.get_viwers(img)
+        print(f"img: {img} result: {result}")
