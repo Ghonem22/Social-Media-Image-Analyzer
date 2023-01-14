@@ -1,1 +1,8 @@
 /test/
+/models/facebook_pos4_m6.pt
+/models/facebook_pos4_n6.pt
+/models/facebook_pos4_X6.pt
+/models/FB_Story_m.pt
+/models/FB_Story_x.pt
+/models/insta_post.pt
+/models/insta_post_X.pt
