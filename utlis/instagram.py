@@ -96,24 +96,30 @@ class InstaStoryExtractor:
         except:
             return False
 
-    def get_viwers(self, img):
+    def get_viwers(self, img, data = None):
+        flag = False
         response = self.get_text(img)["TextDetections"]
-        data = {"viewers": 0}
+        if data is None:
+            data = {}
+
         for i in range(len(response)):
             text = response[i]['DetectedText']
             text_checker = text.lower().replace("أ", "ا").replace("إ", "ا").replace("آ", "ا")
-            if ("viewers" in text_checker or "مشاهد" in text_checker):
-                if self.is_num(response[i - 1]['DetectedText'].strip()):
-                    data["viewers"] = int((response[i - 1]['DetectedText']).strip())
-                elif self.is_num(response[i - 2]['DetectedText'].strip()):
-                    data["viewers"] = int((response[i - 2]['DetectedText']).strip())
-                elif self.is_num(response[i - 3]['DetectedText'].strip()):
-                    data["viewers"] = int((response[i - 3]['DetectedText']).strip())
-                elif self.is_num(response[i - 4]['DetectedText'].strip()):
-                    data["viewers"] = int((response[i - 4]['DetectedText']).strip())
-                elif self.is_num(response[i - 5]['DetectedText'].strip()):
-                    data["viewers"] = int((response[i - 5]['DetectedText']).strip())
 
+            if ("viewers" in text_checker or "مشاهد" in text_checker):
+                num = text_checker.replace("viewers", "").replace("مشاهد", "").replace(",", "").strip()
+                if self.is_num(num):
+                    data["Views"] = int(num)
+                    break
+                print(text_checker)
+                # check the previous last 5 numbers
+                for j in range(1,6):
+                    if self.is_num(response[i - j]['DetectedText'].strip()):
+                        data["Views"] = int((response[i - j]['DetectedText']).strip())
+                        flag = True
+                        break
+                    if flag:
+                        break
                 break
         return data
 
@@ -144,8 +150,6 @@ class InstaStoryExtractor:
         if data is None:
             data = {}
 
-        data["AddedFrom"] = ''
-
         response = self.get_text(img)
         # iterate over date_sumbols to get date
         for i in range(len(response["TextDetections"])):
@@ -156,3 +160,12 @@ class InstaStoryExtractor:
                 return data
         return data
 
+
+if __name__ == "__main__":
+    im1 = "test\\facebook_story\\9ed0f0166b7e5b00225536d3309b8335.jpg"
+    im2 = "test\\facebook_story\\9ed0f0166b7e5b00225536d3309b8335.jpg"
+    insta_extractor = InstaStoryExtractor()
+    result = insta_extractor.get_viwers(im1)
+    print(result)
+    result = insta_extractor.get_date(im2, result)
+    print(result)

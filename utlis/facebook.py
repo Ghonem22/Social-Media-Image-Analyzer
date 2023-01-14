@@ -2,7 +2,7 @@ import torch
 import cv2
 import boto3
 import configparser
-import configparser
+from instagram import InstaStoryExtractor
 
 config = configparser.ConfigParser()
 config.read('utlis/config.ini')
@@ -41,7 +41,7 @@ class PostDataExtractor:
         result = response['TextDetections'][0]['DetectedText']
         return result
 
-    def get_data(self, image, visualize=True):
+    def get_data(self, image):
         # {0: 'Date', 1: 'Custom', 2: 'Likes', 3: 'Public', 4: 'Friends', 5: 'onlyme'}
 
         data = {}
@@ -100,7 +100,7 @@ class StoryDataExtractor:
         result = response['TextDetections'][0]['DetectedText']
         return result
 
-    def get_data(self, image, visualize=True):
+    def get_data(self, image):
         # {0: 'time', 1: 'public', 2: 'views', 3: 'custom', 4: 'friends'}
 
         data = {}
@@ -130,3 +130,39 @@ class StoryDataExtractor:
                 data['Privacy'] = "friends only"
 
         return data
+
+
+if __name__ == "__main__":
+    import glob
+    imgs = glob.glob("test\\facebook_story\\*")
+
+    model = torch.hub.load('ultralytics/yolov5', 'custom',
+                           path='models/FB_Story_x.pt')
+    post_extractor = StoryDataExtractor(model)
+    insta_extractor = InstaStoryExtractor()
+
+    for img in imgs:
+        result = post_extractor.get_data(img)
+        if not result.get("AddedFrom"):
+            print("Failed to get date")
+            result = insta_extractor.get_date(img, result)
+
+        if not result.get("Views"):
+            print("Failed to get viewers")
+            result = insta_extractor.get_viwers(img, result)
+
+        print(f"img: {img} result: {result}")
+
+'''
+if __name__ == "__main__":
+    import glob
+    imgs = glob.glob("test\\facebook_post\\*")
+
+    model = torch.hub.load('ultralytics/yolov5', 'custom',
+                           path='models/facebook_pos4_X6.pt')
+    post_extractor = PostDataExtractor(model)
+    for img in imgs:
+        result = post_extractor.get_data(img)
+        print(f"img: {img} result: {result}")
+        
+'''
