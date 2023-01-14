@@ -197,11 +197,21 @@ class InstaStoryExtractor:
 #         print(f"img: {img} result: {result}")
 #
 
+# if __name__ == "__main__":
+#     import glob
+#     imgs = glob.glob("test/insta story/viewers/*")
+#     insta_extractor = InstaStoryExtractor()
+#
+#     for img in imgs:
+#         result = insta_extractor.get_viwers(img)
+#         print(f"img: {img} result: {result}")
+#
+
 if __name__ == "__main__":
     import glob
-    imgs = glob.glob("test/insta story/viewers/*")
-    insta_extractor = InstaStoryExtractor()
+    imgs = glob.glob("test/insta post/*")
+    insta_extractor = InstaPostExtractor()
 
     for img in imgs:
-        result = insta_extractor.get_viwers(img)
+        result = insta_extractor.get_data(img)
         print(f"img: {img} result: {result}")
