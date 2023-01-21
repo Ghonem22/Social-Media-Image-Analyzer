@@ -24,6 +24,7 @@ def encode(path):
     f = f[2:len(f)-1]
     return f
 
+
 original_path = "/media/youssef/DVolume/AI/home/impactyn/proj/Social-Media-Image-Analyzer/test/ai matching/15.jpg"
 screenshot_path = "/media/youssef/DVolume/AI/home/impactyn/proj/Social-Media-Image-Analyzer/test/ai matching/16.jpg"
 headers = {'content-type': 'application/json', 'API-KEY': key}
