@@ -24,9 +24,10 @@ class ImageMatch:
         cropped_images = results.crop(save=False)
         # choose the cropped image if the confidence is more than 0.7
         for cropped_image in cropped_images:
-            if float(cropped_image['conf']) > 0.4:
+            if float(cropped_image['conf']) > 0.5:
                 img = cropped_image['im']
                 return img
+        return image1
 
     def get_image_features(self, img, resize):
         img = img.resize((resize, resize))
