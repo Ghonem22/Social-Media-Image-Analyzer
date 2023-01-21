@@ -6,7 +6,6 @@ from instagram import InstaStoryExtractor
 
 config = configparser.ConfigParser()
 config.read('utlis/config.ini')
-
 AccessKeyID = config['AWS']['access_key']
 SecretAccessKey = config['AWS']['secret_key']
 
@@ -132,13 +131,15 @@ class StoryDataExtractor:
         return data
 
 
+# facebook_story
 if __name__ == "__main__":
     import glob
     imgs = glob.glob("test\\facebook_story\\*")
 
     model = torch.hub.load('ultralytics/yolov5', 'custom',
-                           path='models/FB_Story_x.pt')
+                           path='models/new_fbstory_x6.pt')
     post_extractor = StoryDataExtractor(model)
+
     insta_extractor = InstaStoryExtractor()
 
     for img in imgs:
@@ -153,16 +154,16 @@ if __name__ == "__main__":
 
         print(f"img: {img} result: {result}")
 
-'''
-if __name__ == "__main__":
-    import glob
-    imgs = glob.glob("test\\facebook_post\\*")
 
-    model = torch.hub.load('ultralytics/yolov5', 'custom',
-                           path='models/facebook_pos4_X6.pt')
-    post_extractor = PostDataExtractor(model)
-    for img in imgs:
-        result = post_extractor.get_data(img)
-        print(f"img: {img} result: {result}")
-        
-'''
+# facebook post
+# if __name__ == "__main__":
+#     import glob
+#     imgs = glob.glob("test\\facebook_post\\*")
+#
+#     model = torch.hub.load('ultralytics/yolov5', 'custom',
+#                            path='models/facebookpostx6_5.pt')
+#     post_extractor = PostDataExtractor(model)
+#     for img in imgs:
+#         result = post_extractor.get_data(img)
+#         print(f"img: {img} result: {result}")
+#
