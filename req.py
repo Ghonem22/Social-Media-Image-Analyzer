@@ -24,15 +24,15 @@ def encode(path):
     f = f[2:len(f)-1]
     return f
 
-screenshot_path = "/media/youssef/DVolume/AI/home/impactyn/proj/Social-Media-Image-Analyzer/test/Picture6.png"
-original_path = "/media/youssef/DVolume/AI/home/impactyn/proj/Social-Media-Image-Analyzer/test/Picture5.png"
 
+original_path = "/media/youssef/DVolume/AI/home/impactyn/proj/Social-Media-Image-Analyzer/test/ai matching/15.jpg"
+screenshot_path = "/media/youssef/DVolume/AI/home/impactyn/proj/Social-Media-Image-Analyzer/test/ai matching/16.jpg"
 headers = {'content-type': 'application/json', 'API-KEY': key}
 
 
 ###############################################################################
 read = {"OriginalPost": encode(original_path), "Screenshot": encode(screenshot_path),
-        "SocialAccount": "Facebook", "Type": "Story", "Matching": 0, "PostId": "123456789"}
+        "SocialAccount": "Instagram", "Type": "Story", "Matching": 1, "PostId": "123456789"}
 
 r = requests.post(url=URL + "ai", json=json.dumps(read), headers=headers)
 
