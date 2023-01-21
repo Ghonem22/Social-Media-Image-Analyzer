@@ -32,7 +32,7 @@ headers = {'content-type': 'application/json', 'API-KEY': key}
 
 ###############################################################################
 read = {"OriginalPost": encode(original_path), "Screenshot": encode(screenshot_path),
-        "SocialAccount": "Facebook", "Type": "Post", "Matching": 0, "PostId": "123456789"}
+         "SocialAccount": "Instagram", "Type": "Story", "Matching": 1, "PostId": "123456789"}
 
 r = requests.post(url=URL + "ai", json=json.dumps(read), headers=headers)
 
