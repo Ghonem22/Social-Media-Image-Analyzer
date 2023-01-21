@@ -18,10 +18,10 @@ import configparser
 app = Flask(__name__)
 # Load all machine learning models
 facebook_post_model = torch.hub.load('ultralytics/yolov5', 'custom',
-                                     path='models/facebook_pos4_X6.pt')
+                                     path='models/facebookpostx6_5.pt')
 
 facebook_story_model = torch.hub.load('ultralytics/yolov5', 'custom',
-                                      path='models/FB_Story_x.pt')
+                                      path='models/new_fbstory_x6.pt')
 
 matching_detection_model = torch.hub.load('ultralytics/yolov5', 'custom',
                                           'models/photo_class_98.pt')
