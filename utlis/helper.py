@@ -13,6 +13,6 @@ def decode(base64_string):
     image = Image.open(BytesIO(base64.b64decode(base64_string)))
     image = image.convert("RGB")
     #resize image
-    image = image.resize((1024, 1024))
+    #image = image.resize((1024, 1024))
 
     return np.array(image)
