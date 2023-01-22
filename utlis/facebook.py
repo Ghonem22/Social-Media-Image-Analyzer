@@ -2,12 +2,10 @@ import torch
 import cv2
 import boto3
 import configparser
-
-# from instagram import InstaStoryExtractor
+from instagram import InstaStoryExtractor
 
 config = configparser.ConfigParser()
 config.read('utlis/config.ini')
-
 AccessKeyID = config['AWS']['access_key']
 SecretAccessKey = config['AWS']['secret_key']
 
@@ -126,42 +124,46 @@ class StoryDataExtractor:
             elif c['cls'].numpy() == 3:
                 data['Privacy'] = "custom"
 
+
             elif c['cls'].numpy() == 4:
                 data['Privacy'] = "friends only"
 
         return data
 
 
-# if __name__ == "__main__":
-#     import glob
-#     imgs = glob.glob("test\\facebook_story\\*")
-#
-#     model = torch.hub.load('ultralytics/yolov5', 'custom',
-#                            path='models/FB_Story_x.pt')
-#     post_extractor = StoryDataExtractor(model)
-#     insta_extractor = InstaStoryExtractor()
-#
-#     for img in imgs:
-#         result = post_extractor.get_data(img)
-#         if not result.get("AddedFrom"):
-#             print("Failed to get date")
-#             result = insta_extractor.get_date(img, result)
-#
-#         if not result.get("Views"):
-#             print("Failed to get viewers")
-#             result = insta_extractor.get_viwers(img, result)
-#
-#         print(f"img: {img} result: {result}")
-
-
+# facebook_story
 if __name__ == "__main__":
     import glob
+    imgs = glob.glob("test\\facebook_story\\*")
 
-    imgs = glob.glob("/media/youssef/DVolume/AI/home/impactyn/proj/Social-Media-Image-Analyzer/test/gh/facebook post/*")
-    print(imgs)
     model = torch.hub.load('ultralytics/yolov5', 'custom',
-                           path='models/facebookpostx6_5.pt')
-    post_extractor = PostDataExtractor(model)
+                           path='models/new_fbstory_x6.pt')
+    post_extractor = StoryDataExtractor(model)
+
+    insta_extractor = InstaStoryExtractor()
+
     for img in imgs:
         result = post_extractor.get_data(img)
+        if not result.get("AddedFrom"):
+            print("Failed to get date")
+            result = insta_extractor.get_date(img, result)
+
+        if not result.get("Views"):
+            print("Failed to get viewers")
+            result = insta_extractor.get_viwers(img, result)
+
         print(f"img: {img} result: {result}")
+
+
+# facebook post
+# if __name__ == "__main__":
+#     import glob
+#     imgs = glob.glob("test\\facebook_post\\*")
+#
+#     model = torch.hub.load('ultralytics/yolov5', 'custom',
+#                            path='models/facebookpostx6_5.pt')
+#     post_extractor = PostDataExtractor(model)
+#     for img in imgs:
+#         result = post_extractor.get_data(img)
+#         print(f"img: {img} result: {result}")
+#
