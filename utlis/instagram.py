@@ -115,7 +115,6 @@ class InstaStoryExtractor:
                 if self.is_num(num):
                     data["Views"] = int(num)
                     break
-                print(text_checker)
                 # check the previous last 5 numbers
                 for j in range(1,6):
                     if self.is_num(response[i - j]['DetectedText'].strip()):
@@ -152,7 +151,6 @@ class InstaStoryExtractor:
             if len(num) > 0:
                 num = num[0]
                 symbol = pp[i].replace(num, "")
-                print(num, symbol)
                 if symbol in self.dates:
                     return num + " " + symbol
 
@@ -172,7 +170,6 @@ class InstaStoryExtractor:
         # iterate over date_sumbols to get date
         for i in range(len(response["TextDetections"])):
             text = response["TextDetections"][i]['DetectedText']
-            print(text)
             normalized_text = self.normalize_txt(text)
             result = self.check_date(normalized_text)
             if result:
