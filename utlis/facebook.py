@@ -2,7 +2,7 @@ import torch
 import cv2
 import boto3
 import configparser
-from instagram import InstaStoryExtractor
+#from instagram import InstaStoryExtractor
 
 config = configparser.ConfigParser()
 config.read('utlis/config.ini')
